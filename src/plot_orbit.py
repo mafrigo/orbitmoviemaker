@@ -155,7 +155,7 @@ def plot_axes(rmax, inclination, arrowsize=0.08, arrow_offset=0.05):
         zor = vec[2]
         xnew = xor * np.cos(ang) - zor * np.sin(ang)
         znew = zor * np.cos(ang) + xor * np.sin(ang)
-        robs = obs_fac * rmax  # radius from which we are observing
+        robs = observer_relative_distance * rmax  # radius from which we are observing
         x = xnew * (robs / (znew + robs))
         y = yor * (robs / (znew + robs))
         z = znew
