@@ -3,6 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib import colors
 import matplotlib.animation as mani
+from matplotlib.collections import LineCollection
 from parameters import *
 
 
@@ -46,18 +47,23 @@ def static_orbit_plot(orbit, frame=-1, rmax=None, color='r', orbit_label=None, a
     else:
         raise IOError("orbit_part_to_be_plotted can either be 'whole' or 'past'")
 
-    # Plotting moving particle with trail
-    alpha = np.zeros(nframes)
-    alpha[frame - trail_length:frame] = np.arange(trail_length).astype(float) / float(trail_length)
-    alpha = alpha[zcond]
-    rgbcolor = colors.to_rgba(color)
-    color_array = np.asarray([(rgbcolor[0], rgbcolor[1], rgbcolor[2], a ** 2) for a in alpha])
+    # Plot moving particle
     ax0 = plt.gca()
-    plt.scatter(x[zcond], y[zcond], c=color_array, zorder=2, s=1)  # plot trail
     if frame_zcond:  # if the particle is in the visible area
         ax0.scatter(x[frame], y[frame], color=color, edgecolor='k', s=20, zorder=3)  # plot particle
 
-    # Markers and labels
+    # Plot trail of particle
+    alpha = np.zeros(nframes)
+    alpha[frame - trail_length:frame] = np.arange(trail_length).astype(float) / float(trail_length)
+    alpha = alpha[zcond]
+    colorfade = colors.to_rgb(color) + (0.0,)
+    cmap = colors.LinearSegmentedColormap.from_list('my', [colorfade, color])
+    points = np.vstack((x, y)).T.reshape(-1, 1, 2)
+    segments = np.hstack((points[:-1], points[1:]))
+    lc = LineCollection(segments, array=alpha, cmap=cmap, lw=2)
+    ax0.add_collection(lc)
+
+    # Various labels and symbols
     if addcenter:
         ax0.scatter(0., 0., marker='x', color='grey', s=5, zorder=1)
     if circlerad:
