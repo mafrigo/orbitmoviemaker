@@ -81,8 +81,8 @@ def static_orbit_plot(orbit, frame=-1, rmax=None, color='r', orbit_label=None, i
 
 def make_orbit_movie(orbit, output_label='testmovie',
                      startframe=0, endframe=None,
-                     rmax_start=None, rmax_end=None,
-                     inclination_start=0., inclination_end=None,
+                     rad_start=None, rad_end=None,
+                     angle_start=0., angle_end=None,
                      skipevery=1, color='r',  vanish=None, orbit_label=None,
                      axes_mini_plot=True, file_frame_delay=0, saveframes=False):
 
@@ -93,12 +93,12 @@ def make_orbit_movie(orbit, output_label='testmovie',
     vanish_length = vanish_length_base * skipevery
     if endframe is None:
         endframe = len(x)
-    if rmax_start is None:
-        rmax_start = np.sqrt(np.max(np.array(x) ** 2 + np.array(y) ** 2 + np.array(z) ** 2))
-    if rmax_end is None:
-        rmax_end = rmax_start
-    if inclination_end is None:
-        inclination_end = inclination_start
+    if rad_start is None:
+        rad_start = np.sqrt(np.max(np.array(x) ** 2 + np.array(y) ** 2 + np.array(z) ** 2))
+    if rad_end is None:
+        rad_end = rad_start
+    if angle_end is None:
+        angle_end = angle_start
 
     # Initialize movie
     plt.rcParams['animation.ffmpeg_path'] = ffmpeg_path
@@ -124,8 +124,8 @@ def make_orbit_movie(orbit, output_label='testmovie',
             else:
                 alphaorbit = 0.6
 
-            rmax = rmax_start + (rmax_end - rmax_start) * (frame - startframe) / (endframe - startframe)
-            inclination = inclination_start + (inclination_end - inclination_start) * (frame - startframe) / (endframe - startframe)
+            rmax = rad_start + (rad_end - rad_start) * (frame - startframe) / (endframe - startframe)
+            inclination = angle_start + (angle_end - angle_start) * (frame - startframe) / (endframe - startframe)
             static_orbit_plot(orbit, frame=frame, inclination=inclination, rmax=rmax, color=color,
                               orbit_label=orbit_label, alphaorbit=alphaorbit)
             if axes_mini_plot:
