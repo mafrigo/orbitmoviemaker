@@ -1,7 +1,7 @@
 # Parameters
 ffmpeg_path = "C:/Users/mattf/PycharmProjects/orbitmoviemaker/ffmpeg.exe"  # Change to your ffmpeg path
 frames_per_second = 30
-obs_fac = 1.  # 2.
+observer_relative_distance = 1.  # relative to rmax (half the size of the image)
 default_alphaorbit = 0.6  # alpha of the main orbit (not particle)
 vanish_length_base = 100  # length in frames of vanishing orbit (if activated)
 trail_length = 50  # length of the particle trail, in number of frames

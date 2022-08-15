@@ -26,11 +26,11 @@ def static_orbit_plot(orbit, frame=-1, rmax=None, color='r', orbit_label=None, i
         frame = nframes - 1
 
     # Pseudo-3D correction
-    robs = obs_fac * rmax  # radius from which we are observing
+    robs = observer_relative_distance * rmax  # radius from which we are observing
     x = x * (robs / (z + robs))
     y = y * (robs / (z + robs))
-    zcond = (z > -0.99 * obs_fac * rmax)  # whether orbit should be visible from POV
-    frame_zcond = (z[frame] > -0.99 * obs_fac * rmax)
+    zcond = (z > -0.99 * robs)  # whether orbit should be visible from POV
+    frame_zcond = (z[frame] > -0.99 * robs)
 
     # Plotting overall orbit
     if orbit_part_to_be_plotted == 'whole':
