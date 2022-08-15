@@ -6,16 +6,16 @@ import matplotlib.animation as mani
 from parameters import *
 
 
-def static_orbit_plot(orbit, frame=-1, rmax=None, color='r', orbit_label=None, inclination=0, alphaorbit=None, savefile=None):
+def static_orbit_plot(orbit, frame=-1, rmax=None, color='r', orbit_label=None, angle=0, alphaorbit=None, savefile=None):
     # Note: only uses x and y
     plt.style.use('dark_background')
     x, y, z, t = orbit.x, orbit.y, orbit.z, orbit.t
     if alphaorbit is None:
         alphaorbit = default_alphaorbit
-    if inclination != 0:
-        ang = np.pi * float(inclination) / 180.
-        xnew = x * np.cos(ang) - z * np.sin(ang)
-        znew = z * np.cos(ang) + x * np.sin(ang)
+    if angle != 0:
+        angle_rad = np.pi * float(angle) / 180.
+        xnew = x * np.cos(angle_rad) - z * np.sin(angle_rad)
+        znew = z * np.cos(angle_rad) + x * np.sin(angle_rad)
         x = xnew
         z = znew
 
@@ -125,11 +125,11 @@ def make_orbit_movie(orbit, output_label='testmovie',
                 alphaorbit = 0.6
 
             rmax = rad_start + (rad_end - rad_start) * (frame - startframe) / (endframe - startframe)
-            inclination = angle_start + (angle_end - angle_start) * (frame - startframe) / (endframe - startframe)
-            static_orbit_plot(orbit, frame=frame, inclination=inclination, rmax=rmax, color=color,
+            angle = angle_start + (angle_end - angle_start) * (frame - startframe) / (endframe - startframe)
+            static_orbit_plot(orbit, frame=frame, angle=angle, rmax=rmax, color=color,
                               orbit_label=orbit_label, alphaorbit=alphaorbit)
             if axes_mini_plot:
-                plot_axes(rmax, inclination)
+                plot_axes(rmax, angle)
             if saveframes:
                 if file_frame_delay is None:
                     plt.savefig(output_label+'/orbit%.4i' % frame)
@@ -140,10 +140,10 @@ def make_orbit_movie(orbit, output_label='testmovie',
             plt.clf()
 
 
-def plot_axes(rmax, inclination, arrowsize=0.08, arrow_offset=0.05):
-    ang = np.pi * inclination / 180.
+def plot_axes(rmax, angle, arrow_size=0.08, arrow_offset=0.05, arrow_width=10e-12):
+    angle_rad = np.pi * angle / 180.
     axes_center_loc = [-0.93 * rmax, 0.93 * rmax]
-    arrow_length = arrowsize * rmax
+    arrow_length = arrow_size * rmax
     displ = arrow_offset * arrow_length
     x_real = [np.sqrt(arrow_length ** 2 - displ ** 2), -displ, 0.]
     y_real = [displ, np.sqrt(arrow_length ** 2 - displ ** 2), 0.]
@@ -153,8 +153,8 @@ def plot_axes(rmax, inclination, arrowsize=0.08, arrow_offset=0.05):
         xor = vec[0]
         yor = vec[1]
         zor = vec[2]
-        xnew = xor * np.cos(ang) - zor * np.sin(ang)
-        znew = zor * np.cos(ang) + xor * np.sin(ang)
+        xnew = xor * np.cos(angle_rad) - zor * np.sin(angle_rad)
+        znew = zor * np.cos(angle_rad) + xor * np.sin(angle_rad)
         robs = observer_relative_distance * rmax  # radius from which we are observing
         x = xnew * (robs / (znew + robs))
         y = yor * (robs / (znew + robs))
@@ -166,8 +166,8 @@ def plot_axes(rmax, inclination, arrowsize=0.08, arrow_offset=0.05):
     y_proj = real_to_proj(y_real)
     z_proj = real_to_proj(z_real)
     plt.arrow(axes_center_loc[0], axes_center_loc[1], x_proj[0], x_proj[1], color='springgreen',
-              width=0.000000000001)  # head_width=0.000000000001)
+              width=arrow_width)
     plt.arrow(axes_center_loc[0], axes_center_loc[1], y_proj[0], y_proj[1], color='r',
-              width=0.000000000001)  # , head_width=0.000000000001)
+              width=arrow_width)
     plt.arrow(axes_center_loc[0], axes_center_loc[1], z_proj[0], z_proj[1], color='dodgerblue',
-              width=0.000000000001)  # , head_width=0.000000000001)
+              width=arrow_width)
