@@ -1,4 +1,5 @@
 import os
+import sys
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib import colors
@@ -82,16 +83,15 @@ def static_orbit_plot(orbit, frame=-1, rmax=None, color='r', orbit_label=None, a
     plt.axis('off')
     plt.tight_layout()
     if savefile:
-        plt.savefig("output/"+savefile)
+        plt.savefig("output/" + savefile)
 
 
 def make_orbit_movie(orbit, output_label='testmovie',
                      startframe=0, endframe=None,
                      rad_start=None, rad_end=None,
                      angle_start=0., angle_end=None,
-                     skipevery=1, color='r',  vanish=None, orbit_label=None,
+                     skipevery=1, color='r', vanish=None, orbit_label=None,
                      axes_mini_plot=True, file_frame_delay=0, saveframes=False):
-
     # Initialize parameters
     x, y, z, t = orbit.x, orbit.y, orbit.z, orbit.t
     if saveframes and not os.path.exists(output_label):
@@ -114,7 +114,9 @@ def make_orbit_movie(orbit, output_label='testmovie',
     fig = plt.figure()
 
     # Main loop over movie frames
-    with writer.saving(fig, "output/"+output_label+".mp4", 100):
+    nframes = (endframe - startframe) / skipevery
+    progress_counter = 0
+    with writer.saving(fig, "output/" + output_label + ".mp4", 100):
         for frame in np.arange(startframe, endframe):
             if frame % skipevery != 0:
                 continue
@@ -132,18 +134,28 @@ def make_orbit_movie(orbit, output_label='testmovie',
 
             rmax = rad_start + (rad_end - rad_start) * (frame - startframe) / (endframe - startframe)
             angle = angle_start + (angle_end - angle_start) * (frame - startframe) / (endframe - startframe)
+
             static_orbit_plot(orbit, frame=frame, angle=angle, rmax=rmax, color=color,
                               orbit_label=orbit_label, alphaorbit=alphaorbit)
+
             if axes_mini_plot:
                 plot_axes(rmax, angle)
             if saveframes:
                 if file_frame_delay is None:
-                    plt.savefig(output_label+'/orbit%.4i' % frame)
+                    plt.savefig(output_label + '/orbit%.4i' % frame)
                 else:
-                    plt.savefig(output_label+'/orbit%.4i' % (frame + file_frame_delay))
+                    plt.savefig(output_label + '/orbit%.4i' % (frame + file_frame_delay))
 
+            # Write to movie
             writer.grab_frame()
             plt.clf()
+
+            # Progress bar
+            progress_counter += 1
+            progress = 100 * progress_counter / nframes
+            sys.stdout.write('\r')
+            sys.stdout.write("[{:{}}] {:.1f}%".format("="*int(progress/(100/progress_bar_length)), progress_bar_length, progress))
+            sys.stdout.flush()
 
 
 def plot_axes(rmax, angle, arrow_size=0.08, arrow_offset=0.05, arrow_width=10e-12):

@@ -10,3 +10,4 @@ addcenter = False  # Mark center with an x
 circlerad = None  # if a number, plots a circle with that radius (e.g. for BH sphere of influence)
 scale_label = False  # Add spatial scale in the bottom of the image
 time_label = True  # if True, adds time in the bottom of the screen
+progress_bar_length = 50
