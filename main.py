@@ -10,7 +10,7 @@ if __name__ == '__main__':
     # Interpolate orbit to double the number of frames
     orbit.interpolate_orbit(new_frames_per_frame=2)
     # Static orbit image
-    static_orbit_plot(orbit, frame=3000, savefile="testimage", color="orange")
+    static_orbit_plot(orbit, frame=1500, savefile="testimage", color="orange")
     # Movie with rotation and zooming out
     make_orbit_movie(orbit, startframe=4400, endframe=5400, skipevery=2, color="orange", output_label="testmovie",
                      angle_start=0, angle_end=180, rad_start=0.3, rad_end=0.9)
