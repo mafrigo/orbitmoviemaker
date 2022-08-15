@@ -23,5 +23,12 @@ class TestPlotOrbit(unittest.TestCase):
         static_orbit_plot(self.orbit, frame=1500)
 
 
+class TestFfmpeg(unittest.TestCase):
+    def test_ffmpeg_exists(self):
+        plt.rcParams['animation.ffmpeg_path'] = ffmpeg_path
+        FFMpegWriter = mani.writers['ffmpeg']
+        FFMpegWriter(fps=frames_per_second)
+
+
 if __name__ == '__main__':
     unittest.main()
